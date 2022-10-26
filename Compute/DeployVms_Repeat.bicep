@@ -1,9 +1,11 @@
 param resourceNamePrefix string
 param location string = resourceGroup().location
-param adminUserName string = 'UserName'
+param adminUserName string
 
-param kvName string = 'KeyVaultName'
-param secretName string = 'SecretName'
+@secure()
+param adminUserPassword string
+param numberOfWindows int
+param numberOfUbuntu int
 
 resource vnet 'Microsoft.Network/virtualNetworks@2022-01-01' = {
   name: '${resourceNamePrefix}-vnet'
@@ -103,31 +105,26 @@ resource NSG3 'Microsoft.Network/networkSecurityGroups@2022-01-01' = {
   }
 }
 
-resource KeyVault 'Microsoft.KeyVault/vaults@2021-11-01-preview' existing = {
-  name: kvName
-  scope: resourceGroup('kkRGP')
-}
-
-module WinVmModule '../module/deploy-windows.bicep' = {
-  name: '${resourceNamePrefix}-winVmDeploy'
+module WinVmModule '../module/deploy-windows.bicep' = [for i in range(0, numberOfWindows): {
+  name: '${resourceNamePrefix}-winVmDeploy${padLeft(i+1, 3, '0')}'
   params: {
-    adminPassword: KeyVault.getSecret(secretName)
+    adminPassword: adminUserPassword
     adminUserName: adminUserName
     location: location
-    vmName: '${resourceNamePrefix}-WinVM1'
+    vmName: '${resourceNamePrefix}-WinVM${padLeft(i+1, 3, '0')}'
     subnetId: vnet::Subnet1.id
     vmSize: 'Standard_B2ms'
   }
-}
+}]
 
-module UbuVmModule '../module/deploy-ubuntu.bicep' = {
-  name: '${resourceNamePrefix}-ubuVmDeploy'
+module UbuVmModule '../module/deploy-ubuntu.bicep' = [for i in range(0, numberOfUbuntu): {
+  name: '${resourceNamePrefix}-ubuVmDeploy${padLeft(i+1, 3, '0')}'
   params: {
-    adminPassword: KeyVault.getSecret(secretName)
+    adminPassword: adminUserPassword
     adminUserName: adminUserName
     location: location
-    vmName: '${resourceNamePrefix}-UbuVM1'
+    vmName: '${resourceNamePrefix}-UbuVM${padLeft(i+1, 3, '0')}'
     subnetId: vnet::Subnet2.id
     vmSize: 'Standard_B1ms'
   }
-}
+}]

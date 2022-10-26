@@ -4,14 +4,33 @@ param adminUserName string
 
 @secure()
 param adminPassword string
-param nicId string
+param subnetId string
+param vmSize string
+
+resource NIC 'Microsoft.Network/networkInterfaces@2022-01-01' = {
+  name: '${vmName}-nic'
+  location: location
+  properties: {
+    ipConfigurations: [
+      {
+        name: 'ipconfig1'
+        properties: {
+          privateIPAllocationMethod: 'Dynamic'
+          subnet: {
+            id: subnetId
+          }
+        }
+      }
+    ]
+  }
+}
 
 resource WinVM 'Microsoft.Compute/virtualMachines@2022-03-01' = {
   name: vmName
   location: location
   properties: {
     hardwareProfile: {
-      vmSize: 'Standard_B2ms'
+      vmSize: vmSize
     }
     osProfile: {
       computerName: vmName
@@ -36,7 +55,7 @@ resource WinVM 'Microsoft.Compute/virtualMachines@2022-03-01' = {
     networkProfile: {
       networkInterfaces: [
         {
-          id: nicId
+          id: NIC.id
         }
       ]
     }
