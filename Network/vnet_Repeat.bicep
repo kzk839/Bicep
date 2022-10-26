@@ -7,7 +7,7 @@ param repeatNumber int
 var addressSpace = '${addressPrefix}.0.0/16'
 
 resource vNet 'Microsoft.Network/virtualNetworks@2021-05-01' = [for i in range(0,  repeatNumber):  {
-  name: '${vNetNamePrefix}-VNet-${padLeft(i, 3, '0')}'
+  name: '${vNetNamePrefix}-VNet-${padLeft(i+1, 3, '0')}'
   location: location
   properties: {
     addressSpace: {
