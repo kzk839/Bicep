@@ -4,7 +4,7 @@ param VNetName string
 
 param SubnetName string
 
-param Storage_Name string
+param StorageName string
 
 @allowed([
   'Standard_LRS'
@@ -16,7 +16,7 @@ param Storage_Name string
   'Premium_LRS'
   'Premium_ZRS'
 ])
-param Storage_SKU string
+param StorageSKU string
 
 
 resource VNet 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
@@ -27,10 +27,10 @@ resource VNet 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
 }
 
 resource Storage 'Microsoft.Storage/storageAccounts@2021-09-01' = {
-  name: Storage_Name
+  name: StorageName
   location: location
   sku: {
-    name: Storage_SKU
+    name: StorageSKU
   }
   kind: 'StorageV2'
   properties: {
@@ -40,12 +40,12 @@ resource Storage 'Microsoft.Storage/storageAccounts@2021-09-01' = {
 }
 
 resource StoragePe 'Microsoft.Network/privateEndpoints@2022-01-01' = {
-  name: '${Storage_Name}-PE'
+  name: '${StorageName}-PE'
   location: location
   properties: {
     privateLinkServiceConnections: [
       {
-        name: '${Storage_Name}-PE-Con'
+        name: '${StorageName}-PE-Con'
         properties: {
           groupIds: [
             'blob'
