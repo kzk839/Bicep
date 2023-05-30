@@ -75,7 +75,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' = {
   }
 }
 
-resource dotNetSite 'Microsoft.Web/sites@2022-09-01' = {
+resource webAppSite 'Microsoft.Web/sites@2022-09-01' = {
   name: appServiceName
   location: location
   properties: {
@@ -108,7 +108,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-11-01' = {
       {
         name: '${appServiceName}-PE-Con'
         properties: {
-          privateLinkServiceId: dotNetSite.id
+          privateLinkServiceId: webAppSite.id
           groupIds: [
             'sites'
           ]
