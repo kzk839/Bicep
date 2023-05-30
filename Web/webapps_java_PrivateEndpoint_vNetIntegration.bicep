@@ -54,8 +54,8 @@ param integrationSubnetName string
 
 var appServicePlanName = '${appServiceName}-Plan'
 var webserver = (javaWebServerStack == 'Java SE (Embedded Web Server)') ? 'JAVA|' : (javaWebServerStack == 'Apache Tomcat 10.0') ? 'TOMCAT|10.0' : (javaWebServerStack == 'Apache Tomcat 9.0') ? 'TOMCAT|9.0' : 'TOMCAT|8.5'
-var runtime = (runtimeStack == 'Java 17') ? '17-java17' : '11-java11'
-var linuxFxVersion = '${webserver}${runtime}'
+var runtime = (runtimeStack == 'Java 17') ? '-java17' : '-java11'
+var linuxFxVersion = (javaWebServerStack == 'Java SE (Embedded Web Server)') ? '${webserver}${javaVersion}${runtime}' : '${webserver}${runtime}'
 var javaVersion = (runtimeStack == 'Java 17') ? '17' : '11'
 var javaContainer = (javaWebServerStack == 'Java SE (Embedded Web Server)') ? 'Java' : 'TOMCAT'
 var javaContainerVersion = (javaWebServerStack == 'Java SE (Embedded Web Server)') ? 'SE' : (javaWebServerStack == 'Apache Tomcat 10.0') ? '10.0' : (javaWebServerStack == 'Apache Tomcat 9.0') ? '9.0' : '8.5'
