@@ -3,6 +3,14 @@ param location string = resourceGroup().location
 
 var appGwName = 'appgwv1'
 
+resource NSG 'Microsoft.Network/networkSecurityGroups@2022-01-01' = {
+  name: 'appgwv1-nsg'
+  location: location
+  properties: {
+    securityRules: []
+  }
+}
+
 resource vNet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   name: vNetname
   location: location
@@ -17,6 +25,9 @@ resource vNet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
         name: 'Subnet1'
         properties: {
           addressPrefix: '10.0.0.0/24'
+          networkSecurityGroup: {
+            id: NSG.id
+          }
         }
       }
     ]
