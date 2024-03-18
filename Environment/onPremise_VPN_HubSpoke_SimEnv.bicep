@@ -420,7 +420,7 @@ module hubVm1 '../module/deploy-ubuntu20_04.bicep' = {
     adminPassword: password
     adminUserName: user
     location: location
-    subnetId: onPremiseVnet::onPremiseSubnet1.id
+    subnetId: hubVnet::hubSubnet1.id
     vmName: hubVm1Name
     vmSize: vmSize
   }
